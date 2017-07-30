@@ -38,19 +38,27 @@ describe('countColumns()', () => {
 
 describe('jira()', () => {
 	it('formats a single character', () => {
-		expect(jira([['a']])).toBe('|a|');
+		const table = parseTable('a');
+		const actual = jira(table);
+		expect(actual).toBe('|a|');
 	});
 
 	it('formats two columns of a single row', () => {
-		expect(jira([['a', 'b']])).toBe('|a|b|');
+		const table = parseTable('a	b');
+		const actual = jira(table);
+		expect(actual).toBe('|a|b|');
 	});
 
 	it('formats two columns of two rows', () => {
-		expect(jira([['a', 'b'], ['c', 'd']])).toBe('|a|b|\n|c|d|');
+		const table = parseTable(`a	b
+c	d`);
+		const actual = jira(table);
+		expect(actual).toBe('|a|b|\n|c|d|');
 	});
 
 	it('can include headers row', () => {
-		const table = [['a', 'b'], ['c', 'd']];
+		const table = parseTable(`a	b
+c	d`);
 		const options = {
 			firstRowHeaders: true,
 		};
