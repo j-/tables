@@ -1,4 +1,4 @@
-import { parseTable, countColumns, jira } from './create-table';
+import { parseTable, countColumns, jira, markdown } from './create-table';
 
 describe('parseTable()', () => {
 	it('parses a single character', () => {
@@ -56,5 +56,36 @@ describe('jira()', () => {
 		};
 		const actual = jira(table, options);
 		expect(actual).toBe('||a||b||\n|c|d|');
+	});
+});
+
+describe('markdown()', () => {
+	it('formats a single character', () => {
+		const table = parseTable('a');
+		const actual = markdown(table);
+		expect(actual).toBe('| |\n|-|\n|a|');
+	});
+
+	it('formats two columns of a single row', () => {
+		const table = parseTable('a	b');
+		const actual = markdown(table);
+		expect(actual).toBe('| | |\n|-|-|\n|a|b|');
+	});
+
+	it('formats two columns of two rows', () => {
+		const table = parseTable(`a	b
+c	d`);
+		const actual = markdown(table);
+		expect(actual).toBe('| | |\n|-|-|\n|a|b|\n|c|d|');
+	});
+
+	it('can include headers row', () => {
+		const table = parseTable(`a	b
+c	d`);
+		const options = {
+			firstRowHeaders: true,
+		};
+		const actual = markdown(table, options);
+		expect(actual).toBe('|a|b|\n|-|-|\n|c|d|');
 	});
 });

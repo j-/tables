@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Checkbox } from '@blueprintjs/core';
-import { parseTable, jira } from '../create-table';
+import { parseTable, jira, markdown } from '../create-table';
 import './Converter.css';
 
 const copy = require('clipboard-copy');
@@ -33,11 +33,18 @@ export default class Converter extends React.Component<{}, State> {
 						onChange={this.handleChangeFirstRowHeaders}
 					/>
 					<button
-						className="pt-button pt-fill pt-large pt-icon-clipboard"
+						className="Converter-action pt-button pt-fill pt-large pt-icon-clipboard"
 						type="button"
 						onClick={this.copyJira}
 					>
 						Copy JIRA format
+					</button>
+					<button
+						className="Converter-action pt-button pt-fill pt-large pt-icon-clipboard"
+						type="button"
+						onClick={this.copyMarkdown}
+					>
+						Copy markdown format
 					</button>
 				</div>
 			</div>
@@ -62,6 +69,15 @@ export default class Converter extends React.Component<{}, State> {
 		const { input } = this.state;
 		const parsed = parseTable(input);
 		const formatted = jira(parsed, {
+			firstRowHeaders: this.state.firstRowHeaders,
+		});
+		copy(formatted);
+	}
+
+	private copyMarkdown = () => {
+		const { input } = this.state;
+		const parsed = parseTable(input);
+		const formatted = markdown(parsed, {
 			firstRowHeaders: this.state.firstRowHeaders,
 		});
 		copy(formatted);
