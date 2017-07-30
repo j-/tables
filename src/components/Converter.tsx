@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Checkbox } from '@blueprintjs/core';
+import { Checkbox, Intent } from '@blueprintjs/core';
 import TableInput from './TableInput';
 import { parseTable, jira, markdown } from '../create-table';
 import toaster from '../toaster';
@@ -83,27 +83,42 @@ export default class Converter extends React.Component<{}, State> {
 		}));
 	}
 
-	private copyJira = () => {
+	private copy = (formatter: Function, name: string) => {
 		const { input } = this.state;
 		const parsed = parseTable(input);
-		const formatted = jira(parsed, {
-			firstRowHeaders: this.state.firstRowHeaders,
-		});
-		copy(formatted);
-		toaster.show({
-			message: 'Copied JIRA format to clipboard',
-		});
+		try {
+			const formatted = formatter(parsed, {
+				firstRowHeaders: this.state.firstRowHeaders,
+			});
+			copy(formatted);
+			toaster.show({
+				message: `Copied ${name} format to clipboard`,
+			});
+		} catch (err) {
+			toaster.show({
+				intent: Intent.DANGER,
+				action: {
+					text: 'Submit issue',
+					onClick: () => this.submitIssue(err),
+				},
+				message: `Error copying ${name} format to clipboard`,
+			});
+		}
+	}
+
+	private copyJira = () => {
+		this.copy(jira, 'JIRA');
 	}
 
 	private copyMarkdown = () => {
-		const { input } = this.state;
-		const parsed = parseTable(input);
-		const formatted = markdown(parsed, {
-			firstRowHeaders: this.state.firstRowHeaders,
-		});
-		copy(formatted);
-		toaster.show({
-			message: 'Copied markdown format to clipboard',
-		});
+		this.copy(markdown, 'markdown');
+	}
+
+	private submitIssue = (err: Error) => {
+		const title = `Error formatting table: ${err.message}`;
+		const body = err.stack;
+		const url = `https://github.com/j-/tables/issues/new?title=${title}&body=${body}`;
+		const target = '_blank';
+		window.open(url, target);
 	}
 }
