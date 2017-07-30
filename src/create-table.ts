@@ -27,10 +27,11 @@ export const jira = (table: Table, config: Config = {}): string => {
 		...DEFAULT_CONFIG,
 		...config,
 	};
+	const { firstRowHeaders, eol } = mergedConfig;
 	return table.map((row, i) => {
-		const delim = mergedConfig.firstRowHeaders && i === 0 ? '||' : '|';
+		const delim = firstRowHeaders && i === 0 ? '||' : '|';
 		return delim + row.join(delim) + delim;
-	}).join(mergedConfig.eol);
+	}).join(eol);
 };
 
 export const markdown = (table: Table, config: Config = {}): string => {
@@ -38,14 +39,15 @@ export const markdown = (table: Table, config: Config = {}): string => {
 		...DEFAULT_CONFIG,
 		...config,
 	};
+	const { firstRowHeaders, eol } = mergedConfig;
 	const delim = '|';
 	let prefix;
 	let rows;
-	if (mergedConfig.firstRowHeaders) {
+	if (firstRowHeaders) {
 		const firstRow = table[0];
 		prefix = (
 			delim + firstRow.join(delim) + delim +
-			mergedConfig.eol +
+			eol +
 			delim + firstRow.map(() => '-').join(delim) + delim
 		);
 		rows = table.slice(1);
@@ -55,14 +57,14 @@ export const markdown = (table: Table, config: Config = {}): string => {
 		for (let i = 0; i < cols; i++) {
 			prefix += delim + ' ';
 		}
-		prefix += delim + mergedConfig.eol;
+		prefix += delim + eol;
 		for (let i = 0; i < cols; i++) {
 			prefix += delim + '-';
 		}
 		prefix += delim;
 		rows = table;
 	}
-	return prefix + mergedConfig.eol + rows.map((row, i) => {
+	return prefix + eol + rows.map((row, i) => {
 		return row.join(delim);
-	}).map((line) => delim + line + delim).join(mergedConfig.eol);
+	}).map((line) => delim + line + delim).join(eol);
 };
