@@ -1,4 +1,4 @@
-import { parseTable, jira } from './create-table';
+import { parseTable, countColumns, jira } from './create-table';
 
 describe('parseTable()', () => {
 	it('parses a single character', () => {
@@ -11,6 +11,28 @@ describe('parseTable()', () => {
 
 	it('parses two columns of two rows', () => {
 		expect(parseTable('a\tb\nc\td')).toEqual([['a', 'b'], ['c', 'd']]);
+	});
+});
+
+describe('countColumns()', () => {
+	it('counts a 0x0 table', () => {
+		expect(countColumns([])).toEqual(0);
+	});
+
+	it('counts a 1x0 table', () => {
+		expect(countColumns([[]])).toEqual(0);
+	});
+
+	it('counts a single cell', () => {
+		expect(countColumns([['a']])).toEqual(1);
+	});
+
+	it('counts two columns', () => {
+		expect(countColumns([['a', 'b']])).toEqual(2);
+	});
+
+	it('counts an uneven table', () => {
+		expect(countColumns([['a', 'b'], ['c', 'd', 'e'], ['f']])).toEqual(3);
 	});
 });
 

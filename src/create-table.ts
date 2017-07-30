@@ -16,6 +16,12 @@ export const parseTable = (input: string): Table => {
 	));
 };
 
+export const countColumns = (table: Table) => {
+	return table.reduce((max, row) => (
+		Math.max(max, row.length)
+	), 0);
+};
+
 export const jira = (table: Table, config?: Config): string => {
 	const mergedConfig = {
 		...DEFAULT_CONFIG,
