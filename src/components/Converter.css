@@ -7,7 +7,18 @@
 	height: 10em;
 }
 
+.Converter-actions-action {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
 .Converter-action {
 	text-align: left;
 	margin: 0.25em 0;
+	flex: 1;
+}
+
+.Converter-help {
+	margin-left: 0.5em;
 }

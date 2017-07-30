@@ -33,20 +33,38 @@ export default class Converter extends React.Component<{}, State> {
 						label="First row is headers"
 						onChange={this.handleChangeFirstRowHeaders}
 					/>
-					<button
-						className="Converter-action pt-button pt-fill pt-large pt-icon-clipboard"
-						type="button"
-						onClick={this.copyJira}
-					>
-						Copy JIRA format
-					</button>
-					<button
-						className="Converter-action pt-button pt-fill pt-large pt-icon-clipboard"
-						type="button"
-						onClick={this.copyMarkdown}
-					>
-						Copy markdown format
-					</button>
+					<div className="Converter-actions-action">
+						<button
+							className="Converter-action pt-button pt-large pt-icon-clipboard"
+							type="button"
+							onClick={this.copyJira}
+						>
+							Copy JIRA format
+						</button>
+						<a
+							className="Converter-help pt-button pt-minimal pt-icon-help"
+							href="https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=tables"
+							target="_blank"
+							rel="noopener"
+							title="JIRA tables documentation"
+						/>
+					</div>
+					<div className="Converter-actions-action">
+						<button
+							className="Converter-action pt-button pt-large pt-icon-clipboard"
+							type="button"
+							onClick={this.copyMarkdown}
+						>
+							Copy markdown format
+						</button>
+						<a
+							className="Converter-help pt-button pt-minimal pt-icon-help"
+							href="https://help.github.com/articles/organizing-information-with-tables/"
+							target="_blank"
+							rel="noopener"
+							title="Markdown tables documentation"
+						/>
+					</div>
 				</div>
 			</div>
 		);
