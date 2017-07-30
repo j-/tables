@@ -2,7 +2,7 @@
 	margin: 0 0 2em;
 }
 
-.Converter-input.pt-input {
+.Converter-input-container > .TableInput {
 	min-height: 2em;
 	height: 10em;
 }

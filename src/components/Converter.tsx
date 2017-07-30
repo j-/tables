@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Checkbox } from '@blueprintjs/core';
+import TableInput from './TableInput';
 import { parseTable, jira, markdown } from '../create-table';
 import toaster from '../toaster';
 import './Converter.css';
@@ -21,8 +22,7 @@ export default class Converter extends React.Component<{}, State> {
 		return (
 			<div className="Converter">
 				<div className="Converter-input-container">
-					<textarea
-						className="Converter-input pt-input pt-fill"
+					<TableInput
 						value={this.state.input}
 						onChange={this.handleChangeInput}
 					/>
@@ -70,8 +70,7 @@ export default class Converter extends React.Component<{}, State> {
 		);
 	}
 
-	private handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const { value } = e.currentTarget;
+	private handleChangeInput = (value: string) => {
 		this.setState(() => ({
 			input: value,
 		}));
