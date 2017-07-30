@@ -10,6 +10,10 @@ const DEFAULT_CONFIG = {
 	eol: '\n',
 };
 
+export const escapeCell = (input: string): string => {
+	return input.replace(/\|/g, '\\|');
+};
+
 export const parseTable = (input: string): Table => {
 	return input.trim().split(/\r?\n/g).map((line) => (
 		line.split(/\t/g)
@@ -30,7 +34,7 @@ export const jira = (table: Table, config: Config = {}): string => {
 	const { firstRowHeaders, eol } = mergedConfig;
 	return table.map((row, i) => {
 		const delim = firstRowHeaders && i === 0 ? '||' : '|';
-		return delim + row.join(delim) + delim;
+		return delim + row.map(escapeCell).join(delim) + delim;
 	}).join(eol);
 };
 
@@ -39,12 +43,12 @@ const markdownWithHeaders = (table: Table, config: Config): string => {
 	const delim = '|';
 	const firstRow = table[0];
 	const headers = (
-		delim + firstRow.join(delim) + delim +
+		delim + firstRow.map(escapeCell).join(delim) + delim +
 		eol +
 		delim + firstRow.map(() => '-').join(delim) + delim
 	);
 	return headers + eol + table.slice(1).map((row, i) => {
-		return row.join(delim);
+		return row.map(escapeCell).join(delim);
 	}).map((line) => delim + line + delim).join(eol);
 };
 
@@ -62,7 +66,7 @@ const markdownWithoutHeaders = (table: Table, config: Config): string => {
 	}
 	headers += delim;
 	return headers + eol + table.map((row, i) => {
-		return row.join(delim);
+		return row.map(escapeCell).join(delim);
 	}).map((line) => delim + line + delim).join(eol);
 };
 

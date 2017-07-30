@@ -65,6 +65,13 @@ c	d`);
 		const actual = jira(table, options);
 		expect(actual).toBe('||a||b||\n|c|d|');
 	});
+
+	it('escapes pipe characters', () => {
+		const table = parseTable(`|	|
+|	|`);
+		const actual = jira(table);
+		expect(actual).toBe('|\\||\\||\n|\\||\\||');
+	});
 });
 
 describe('markdown()', () => {
@@ -95,5 +102,12 @@ c	d`);
 		};
 		const actual = markdown(table, options);
 		expect(actual).toBe('|a|b|\n|-|-|\n|c|d|');
+	});
+
+	it('escapes pipe characters', () => {
+		const table = parseTable(`|	|
+|	|`);
+		const actual = markdown(table);
+		expect(actual).toBe('| | |\n|-|-|\n|\\||\\||\n|\\||\\||');
 	});
 });
