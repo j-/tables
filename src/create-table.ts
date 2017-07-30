@@ -1,12 +1,12 @@
 export type Table = string[][];
 
 export interface Config {
-	includeHeading?: boolean;
+	firstRowHeaders?: boolean;
 	eol?: string;
 }
 
 const DEFAULT_CONFIG = {
-	includeHeading: false,
+	firstRowHeaders: false,
 	eol: '\n',
 };
 
@@ -22,7 +22,7 @@ export const jira = (table: Table, config?: Config): string => {
 		...config,
 	};
 	return table.map((row, i) => {
-		const delim = mergedConfig.includeHeading && i === 0 ? '||' : '|';
+		const delim = mergedConfig.firstRowHeaders && i === 0 ? '||' : '|';
 		return delim + row.join(delim) + delim;
 	}).join(mergedConfig.eol);
 };

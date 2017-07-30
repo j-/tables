@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Checkbox } from '@blueprintjs/core';
 import { parseTable, jira } from '../create-table';
 import './Converter.css';
 
@@ -6,11 +7,13 @@ const copy = require('clipboard-copy');
 
 interface State {
 	input: string;
+	firstRowHeaders: boolean;
 }
 
 export default class Converter extends React.Component<{}, State> {
 	state: State = {
 		input: '',
+		firstRowHeaders: false,
 	};
 
 	render () {
@@ -24,6 +27,11 @@ export default class Converter extends React.Component<{}, State> {
 					/>
 				</div>
 				<div className="Converter-actions">
+					<Checkbox
+						checked={this.state.firstRowHeaders}
+						label="First row is headers"
+						onChange={this.handleChangeFirstRowHeaders}
+					/>
 					<button
 						className="pt-button pt-fill pt-large pt-icon-clipboard"
 						type="button"
@@ -43,10 +51,19 @@ export default class Converter extends React.Component<{}, State> {
 		}));
 	}
 
+	private handleChangeFirstRowHeaders = (e: React.FormEvent<HTMLInputElement>) => {
+		const { checked } = e.currentTarget;
+		this.setState(() => ({
+			firstRowHeaders: checked,
+		}));
+	}
+
 	private copyJira = () => {
 		const { input } = this.state;
 		const parsed = parseTable(input);
-		const formatted = jira(parsed);
+		const formatted = jira(parsed, {
+			firstRowHeaders: this.state.firstRowHeaders,
+		});
 		copy(formatted);
 	}
 }
