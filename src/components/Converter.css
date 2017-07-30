@@ -1,0 +1,8 @@
+.Converter-input-container {
+	margin: 0 0 2em;
+}
+
+.Converter-input.pt-input {
+	min-height: 2em;
+	height: 10em;
+}
