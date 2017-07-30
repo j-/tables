@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Checkbox } from '@blueprintjs/core';
 import { parseTable, jira, markdown } from '../create-table';
+import toaster from '../toaster';
 import './Converter.css';
 
 const copy = require('clipboard-copy');
@@ -72,6 +73,9 @@ export default class Converter extends React.Component<{}, State> {
 			firstRowHeaders: this.state.firstRowHeaders,
 		});
 		copy(formatted);
+		toaster.show({
+			message: 'Copied JIRA format to clipboard',
+		});
 	}
 
 	private copyMarkdown = () => {
@@ -81,5 +85,8 @@ export default class Converter extends React.Component<{}, State> {
 			firstRowHeaders: this.state.firstRowHeaders,
 		});
 		copy(formatted);
+		toaster.show({
+			message: 'Copied markdown format to clipboard',
+		});
 	}
 }
