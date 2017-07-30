@@ -34,37 +34,47 @@ export const jira = (table: Table, config: Config = {}): string => {
 	}).join(eol);
 };
 
+const markdownWithHeaders = (table: Table, config: Config): string => {
+	const { eol } = config;
+	const delim = '|';
+	const firstRow = table[0];
+	const headers = (
+		delim + firstRow.join(delim) + delim +
+		eol +
+		delim + firstRow.map(() => '-').join(delim) + delim
+	);
+	return headers + eol + table.slice(1).map((row, i) => {
+		return row.join(delim);
+	}).map((line) => delim + line + delim).join(eol);
+};
+
+const markdownWithoutHeaders = (table: Table, config: Config): string => {
+	const { eol } = config;
+	const delim = '|';
+	const cols = countColumns(table);
+	let headers = '';
+	for (let i = 0; i < cols; i++) {
+		headers += delim + ' ';
+	}
+	headers += delim + eol;
+	for (let i = 0; i < cols; i++) {
+		headers += delim + '-';
+	}
+	headers += delim;
+	return headers + eol + table.map((row, i) => {
+		return row.join(delim);
+	}).map((line) => delim + line + delim).join(eol);
+};
+
 export const markdown = (table: Table, config: Config = {}): string => {
 	const mergedConfig = {
 		...DEFAULT_CONFIG,
 		...config,
 	};
-	const { firstRowHeaders, eol } = mergedConfig;
-	const delim = '|';
-	let prefix;
-	let rows;
+	const { firstRowHeaders } = mergedConfig;
 	if (firstRowHeaders) {
-		const firstRow = table[0];
-		prefix = (
-			delim + firstRow.join(delim) + delim +
-			eol +
-			delim + firstRow.map(() => '-').join(delim) + delim
-		);
-		rows = table.slice(1);
+		return markdownWithHeaders(table, mergedConfig);
 	} else {
-		prefix = '';
-		const cols = countColumns(table);
-		for (let i = 0; i < cols; i++) {
-			prefix += delim + ' ';
-		}
-		prefix += delim + eol;
-		for (let i = 0; i < cols; i++) {
-			prefix += delim + '-';
-		}
-		prefix += delim;
-		rows = table;
+		return markdownWithoutHeaders(table, mergedConfig);
 	}
-	return prefix + eol + rows.map((row, i) => {
-		return row.join(delim);
-	}).map((line) => delim + line + delim).join(eol);
 };
