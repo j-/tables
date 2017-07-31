@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Checkbox, Intent } from '@blueprintjs/core';
 import TableInput from './TableInput';
-import { parseTable, jira, markdown } from '../create-table';
+import { Formatter, parseTable, jira, markdown } from '../create-table';
 import toaster from '../toaster';
 import './Converter.css';
 
@@ -83,12 +83,12 @@ export default class Converter extends React.Component<{}, State> {
 		}));
 	}
 
-	private copy = (formatter: Function, name: string) => {
+	private copy = (formatter: Formatter, name: string) => {
 		const { input } = this.state;
 		const parsed = parseTable(input);
 		try {
 			const formatted = formatter(parsed, {
-				firstRowHeaders: this.state.firstRowHeaders,
+				headerCount: this.state.firstRowHeaders ? 1 : 0,
 			});
 			copy(formatted);
 			toaster.show({

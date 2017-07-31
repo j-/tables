@@ -1,12 +1,14 @@
 export type Table = string[][];
 
 export interface Config {
-	firstRowHeaders?: boolean;
+	headerCount?: number;
 	eol?: string;
 }
 
+export type Formatter = (table: Table, config?: Config) => string;
+
 const DEFAULT_CONFIG = {
-	firstRowHeaders: false,
+	headerCount: 0,
 	eol: '\n',
 };
 
@@ -26,14 +28,14 @@ export const countColumns = (table: Table) => {
 	), 0);
 };
 
-export const jira = (table: Table, config: Config = {}): string => {
+export const jira: Formatter = (table: Table, config: Config = {}): string => {
 	const mergedConfig = {
 		...DEFAULT_CONFIG,
 		...config,
 	};
-	const { firstRowHeaders, eol } = mergedConfig;
+	const { headerCount, eol } = mergedConfig;
 	return table.map((row, i) => {
-		const delim = firstRowHeaders && i === 0 ? '||' : '|';
+		const delim = i < headerCount ? '||' : '|';
 		return delim + row.map(escapeCell).join(delim) + delim;
 	}).join(eol);
 };
@@ -70,13 +72,13 @@ const markdownWithoutHeaders = (table: Table, config: Config): string => {
 	}).map((line) => delim + line + delim).join(eol);
 };
 
-export const markdown = (table: Table, config: Config = {}): string => {
+export const markdown: Formatter = (table: Table, config: Config = {}): string => {
 	const mergedConfig = {
 		...DEFAULT_CONFIG,
 		...config,
 	};
-	const { firstRowHeaders } = mergedConfig;
-	if (firstRowHeaders) {
+	const { headerCount } = mergedConfig;
+	if (headerCount) {
 		return markdownWithHeaders(table, mergedConfig);
 	} else {
 		return markdownWithoutHeaders(table, mergedConfig);

@@ -60,10 +60,20 @@ c	d`);
 		const table = parseTable(`a	b
 c	d`);
 		const options = {
-			firstRowHeaders: true,
+			headerCount: 1,
 		};
 		const actual = jira(table, options);
 		expect(actual).toBe('||a||b||\n|c|d|');
+	});
+
+	it('can include multiple headers rows', () => {
+		const table = parseTable(`a	b
+c	d`);
+		const options = {
+			headerCount: 2,
+		};
+		const actual = jira(table, options);
+		expect(actual).toBe('||a||b||\n||c||d||');
 	});
 
 	it('escapes pipe characters', () => {
@@ -98,7 +108,7 @@ c	d`);
 		const table = parseTable(`a	b
 c	d`);
 		const options = {
-			firstRowHeaders: true,
+			headerCount: 1,
 		};
 		const actual = markdown(table, options);
 		expect(actual).toBe('|a|b|\n|-|-|\n|c|d|');
