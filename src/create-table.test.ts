@@ -114,6 +114,16 @@ c	d`);
 		expect(actual).toBe('|a|b|\n|-|-|\n|c|d|');
 	});
 
+	it('can include multiple headers rows', () => {
+		const table = parseTable(`a	b
+c	d`);
+		const options = {
+			headerCount: 2,
+		};
+		const actual = markdown(table, options);
+		expect(actual).toBe('|a|b|\n|c|d|\n|-|-|');
+	});
+
 	it('escapes pipe characters', () => {
 		const table = parseTable(`|	|
 |	|`);

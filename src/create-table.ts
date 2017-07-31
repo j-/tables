@@ -40,33 +40,43 @@ export const jira: Formatter = (table: Table, config: Config = {}): string => {
 	}).join(eol);
 };
 
-const markdownWithHeaders = (table: Table, config: Config): string => {
-	const { eol } = config;
+const markdownEmptyRow = (table: Table, config: Config): string => {
 	const delim = '|';
-	const firstRow = table[0];
-	const headers = (
-		delim + firstRow.map(escapeCell).join(delim) + delim +
-		eol +
-		delim + firstRow.map(() => '-').join(delim) + delim
-	);
-	return headers + eol + table.slice(1).map((row, i) => {
+	const cols = countColumns(table);
+	let result = '';
+	for (let i = 0; i < cols; i++) {
+		result += delim + ' ';
+	}
+	result += delim;
+	return result;
+};
+
+const markdownSplitterRow = (table: Table, config: Config): string => {
+	const delim = '|';
+	const cols = countColumns(table);
+	let result = '';
+	for (let i = 0; i < cols; i++) {
+		result += delim + '-';
+	}
+	result += delim;
+	return result;
+};
+
+const markdownWithHeaders = (table: Table, config: Config): string => {
+	const { headerCount, eol } = config;
+	const delim = '|';
+	const headers = table.slice(0, headerCount).map((row) => (
+		delim + row.map(escapeCell).join(delim) + delim
+	)).join(eol) + eol + markdownSplitterRow(table, config);
+	return (headers + eol + table.slice(headerCount).map((row, i) => {
 		return row.map(escapeCell).join(delim);
-	}).map((line) => delim + line + delim).join(eol);
+	}).map((line) => delim + line + delim).join(eol)).trim();
 };
 
 const markdownWithoutHeaders = (table: Table, config: Config): string => {
 	const { eol } = config;
 	const delim = '|';
-	const cols = countColumns(table);
-	let headers = '';
-	for (let i = 0; i < cols; i++) {
-		headers += delim + ' ';
-	}
-	headers += delim + eol;
-	for (let i = 0; i < cols; i++) {
-		headers += delim + '-';
-	}
-	headers += delim;
+	const headers = markdownEmptyRow(table, config) + eol + markdownSplitterRow(table, config);
 	return headers + eol + table.map((row, i) => {
 		return row.map(escapeCell).join(delim);
 	}).map((line) => delim + line + delim).join(eol);
