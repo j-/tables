@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Checkbox, Intent } from '@blueprintjs/core';
+import { NumericInput, Intent } from '@blueprintjs/core';
 import TableInput from './TableInput';
 import { Formatter, parseTable, jira, markdown } from '../create-table';
 import toaster from '../toaster';
@@ -9,13 +9,13 @@ const copy = require('clipboard-copy');
 
 interface State {
 	input: string;
-	firstRowHeaders: boolean;
+	headerCount: number;
 }
 
 export default class Converter extends React.Component<{}, State> {
 	state: State = {
 		input: '',
-		firstRowHeaders: false,
+		headerCount: 0,
 	};
 
 	render () {
@@ -28,11 +28,20 @@ export default class Converter extends React.Component<{}, State> {
 					/>
 				</div>
 				<div className="Converter-actions">
-					<Checkbox
-						checked={this.state.firstRowHeaders}
-						label="First row is headers"
-						onChange={this.handleChangeFirstRowHeaders}
-					/>
+					<div className="pt-form-group">
+						<label className="pt-label" htmlFor="Converter-header-count">
+							Number of header rows
+						</label>
+						<div className="pt-form-content">
+							<NumericInput
+								id="Converter-header-count"
+								value={this.state.headerCount}
+								onValueChange={this.handleChangeHeaderCount}
+								min={0}
+								minorStepSize={1}
+							/>
+						</div>
+					</div>
 					<div className="Converter-actions-action">
 						<button
 							className="Converter-action pt-button pt-large pt-icon-clipboard"
@@ -76,10 +85,9 @@ export default class Converter extends React.Component<{}, State> {
 		}));
 	}
 
-	private handleChangeFirstRowHeaders = (e: React.FormEvent<HTMLInputElement>) => {
-		const { checked } = e.currentTarget;
+	private handleChangeHeaderCount = (count: number) => {
 		this.setState(() => ({
-			firstRowHeaders: checked,
+			headerCount: count,
 		}));
 	}
 
@@ -88,7 +96,7 @@ export default class Converter extends React.Component<{}, State> {
 		const parsed = parseTable(input);
 		try {
 			const formatted = formatter(parsed, {
-				headerCount: this.state.firstRowHeaders ? 1 : 0,
+				headerCount: this.state.headerCount,
 			});
 			copy(formatted);
 			toaster.show({
