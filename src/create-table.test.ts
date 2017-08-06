@@ -44,21 +44,19 @@ describe('jira()', () => {
 	});
 
 	it('formats two columns of a single row', () => {
-		const table = parseTable('a	b');
+		const table = parseTable('a\tb');
 		const actual = jira(table);
 		expect(actual).toBe('|a|b|');
 	});
 
 	it('formats two columns of two rows', () => {
-		const table = parseTable(`a	b
-c	d`);
+		const table = parseTable('a\tb\nc\td');
 		const actual = jira(table);
 		expect(actual).toBe('|a|b|\n|c|d|');
 	});
 
 	it('can include headers row', () => {
-		const table = parseTable(`a	b
-c	d`);
+		const table = parseTable('a\tb\nc\td');
 		const options = {
 			headerCount: 1,
 		};
@@ -67,8 +65,7 @@ c	d`);
 	});
 
 	it('can include multiple headers rows', () => {
-		const table = parseTable(`a	b
-c	d`);
+		const table = parseTable('a\tb\nc\td');
 		const options = {
 			headerCount: 2,
 		};
@@ -77,14 +74,13 @@ c	d`);
 	});
 
 	it('escapes pipe characters', () => {
-		const table = parseTable(`|	|
-|	|`);
+		const table = parseTable('|\t|\n|\t|');
 		const actual = jira(table);
 		expect(actual).toBe('|\\||\\||\n|\\||\\||');
 	});
 
 	it('formats empty cells correctly', () => {
-		const table = parseTable('a		b');
+		const table = parseTable('a\t\tb');
 		const actual = jira(table);
 		expect(actual).toBe('|a| |b|');
 	});
@@ -98,21 +94,19 @@ describe('markdown()', () => {
 	});
 
 	it('formats two columns of a single row', () => {
-		const table = parseTable('a	b');
+		const table = parseTable('a\tb');
 		const actual = markdown(table);
 		expect(actual).toBe('| | |\n|-|-|\n|a|b|');
 	});
 
 	it('formats two columns of two rows', () => {
-		const table = parseTable(`a	b
-c	d`);
+		const table = parseTable('a\tb\nc\td');
 		const actual = markdown(table);
 		expect(actual).toBe('| | |\n|-|-|\n|a|b|\n|c|d|');
 	});
 
 	it('can include headers row', () => {
-		const table = parseTable(`a	b
-c	d`);
+		const table = parseTable('a\tb\nc\td');
 		const options = {
 			headerCount: 1,
 		};
@@ -121,8 +115,7 @@ c	d`);
 	});
 
 	it('can include multiple headers rows', () => {
-		const table = parseTable(`a	b
-c	d`);
+		const table = parseTable('a\tb\nc\td');
 		const options = {
 			headerCount: 2,
 		};
@@ -131,8 +124,7 @@ c	d`);
 	});
 
 	it('escapes pipe characters', () => {
-		const table = parseTable(`|	|
-|	|`);
+		const table = parseTable('|\t|\n|\t|');
 		const actual = markdown(table);
 		expect(actual).toBe('| | |\n|-|-|\n|\\||\\||\n|\\||\\||');
 	});
