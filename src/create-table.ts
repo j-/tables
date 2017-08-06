@@ -16,6 +16,10 @@ export const escapeCell = (input: string): string => {
 	return input.replace(/\|/g, '\\|');
 };
 
+export const ensureValue = (input: string): string => {
+	return input || ' ';
+};
+
 export const parseTable = (input: string): Table => {
 	return input.trim().split(/\r?\n/g).map((line) => (
 		line.split(/\t/g)
@@ -36,7 +40,7 @@ export const jira: Formatter = (table: Table, config: Config = {}): string => {
 	const { headerCount, eol } = mergedConfig;
 	return table.map((row, i) => {
 		const delim = i < headerCount ? '||' : '|';
-		return delim + row.map(escapeCell).join(delim) + delim;
+		return delim + row.map(escapeCell).map(ensureValue).join(delim) + delim;
 	}).join(eol);
 };
 

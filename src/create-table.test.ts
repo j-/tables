@@ -82,6 +82,12 @@ c	d`);
 		const actual = jira(table);
 		expect(actual).toBe('|\\||\\||\n|\\||\\||');
 	});
+
+	it('formats empty cells correctly', () => {
+		const table = parseTable('a		b');
+		const actual = jira(table);
+		expect(actual).toBe('|a| |b|');
+	});
 });
 
 describe('markdown()', () => {
